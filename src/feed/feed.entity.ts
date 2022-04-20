@@ -1,20 +1,20 @@
-export interface Item {
-  title: string;
-  link: string;
-  media: string;
-  date_taken: Date;
-  description: string;
-  published: Date;
-  author: string;
-  author_id: string;
-  tags: string;
-}
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { ImageEntity } from './image.entity';
 
-export interface FeedEntity {
+@Entity()
+export class FeedEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column()
   title: string;
+  @Column()
   link: string;
+  @Column()
   description: string;
+  @Column()
   modified: Date;
+  @Column()
   generator: string;
-  items: Item[];
+  @OneToMany(() => ImageEntity, (image) => image.feed)
+  images: ImageEntity[];
 }
