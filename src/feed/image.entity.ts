@@ -4,6 +4,7 @@ import {
   ManyToOne,
   JoinColumn,
   Column,
+  Index,
 } from 'typeorm';
 import { FeedEntity } from './feed.entity';
 
@@ -19,9 +20,9 @@ export class ImageEntity {
   feed: FeedEntity;
   @Column()
   title: string;
-  @Column()
+  @Column({ unique: true })
   link: string;
-  @Column()
+  @Column({ unique: true })
   media: string;
   @Column()
   date_taken: Date;
@@ -30,9 +31,12 @@ export class ImageEntity {
   @Column()
   published: Date;
   @Column()
+  @Index()
   author: string;
   @Column()
+  @Index()
   author_id: string;
   @Column()
+  @Index()
   tags: string;
 }

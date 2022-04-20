@@ -8,7 +8,7 @@ export class FeedEntity {
   }
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ unique: true })
   title: string;
   @Column()
   link: string;
