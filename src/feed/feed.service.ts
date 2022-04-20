@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { mergeMap, map } from 'rxjs/operators';
 import { ImageEntity } from './image.entity';
+import { EMPTY, Observable, of } from 'rxjs';
 
 @Injectable()
 export class FeedService {
@@ -21,10 +22,55 @@ export class FeedService {
         this.seed();
       }
     });
+    this.getUpdates();
   }
 
-  private seed() {
-    this.httpFeed
+  private async getUpdates() {
+    this.getFeed()
+      .pipe(
+        mergeMap(async (feed) => {
+          try {
+            console.log('trying to update the feed');
+            await this.makeEntityFromDto(feed);
+            return EMPTY;
+          } catch (err) {
+            if (err.code == 23505) {
+              // duplicate key error
+              const dbFeed = await this.feedRepo.findOne({ title: feed.title });
+              console.log('found the feed');
+              const images = feed.items.map((item) => {
+                const { media, ...rest } = item;
+                return new ImageEntity({
+                  ...rest,
+                  media: media.m,
+                  feed: dbFeed,
+                });
+              });
+              const savedImages = await this.imageRepo.save(images);
+              console.log(`${savedImages.length} images updated`);
+
+              return of(dbFeed);
+            }
+          }
+        }),
+      )
+      .subscribe({
+        next: () => {
+          console.log('feed updated');
+        },
+        error: (err) => {
+          console.error('unable to update feed');
+          console.error(err);
+        },
+        complete: () => {
+          console.log('getUpdates');
+          setTimeout(() => this.getUpdates(), 60000 * 15);
+        },
+      });
+  }
+
+  private getFeed(): Observable<FeedDto> {
+    return this.httpFeed
       .get<string>(
         'https://api.flickr.com/services/feeds/photos_public.gne?format=json',
       )
@@ -32,8 +78,12 @@ export class FeedService {
         map((resp) =>
           JSON.parse(resp.data.replace('jsonFlickrFeed(', '').slice(0, -1)),
         ),
-        mergeMap((feed) => this.makeEntityFromDto(feed)),
-      )
+      );
+  }
+
+  private seed() {
+    this.getFeed()
+      .pipe(mergeMap((feed) => this.makeEntityFromDto(feed)))
       .subscribe({
         next: () => {
           console.log('feed loaded');
