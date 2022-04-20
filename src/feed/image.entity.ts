@@ -9,6 +9,9 @@ import { FeedEntity } from './feed.entity';
 
 @Entity()
 export class ImageEntity {
+  constructor(obj: Partial<ImageEntity>) {
+    Object.assign(this, obj);
+  }
   @PrimaryGeneratedColumn()
   id: number;
   @ManyToOne(() => FeedEntity, { onDelete: 'CASCADE' })

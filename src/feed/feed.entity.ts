@@ -3,6 +3,9 @@ import { ImageEntity } from './image.entity';
 
 @Entity()
 export class FeedEntity {
+  constructor(obj: Partial<FeedEntity>) {
+    Object.assign(this, obj);
+  }
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
