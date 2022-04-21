@@ -18,6 +18,8 @@ export class ImageEntity {
   @ManyToOne(() => FeedEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'feed_id' })
   feed: FeedEntity;
+  @Column({ name: 'feed_id' })
+  feedId: number;
   @Column()
   title: string;
   @Column({ unique: true })
