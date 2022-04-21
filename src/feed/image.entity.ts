@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { FeedEntity } from './feed.entity';
 
-@Entity()
+@Entity({ name: 'images' })
 export class ImageEntity {
   constructor(obj: Partial<ImageEntity>) {
     Object.assign(this, obj);

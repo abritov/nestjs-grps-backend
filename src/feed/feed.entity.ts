@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { ImageEntity } from './image.entity';
 
-@Entity()
+@Entity({ name: 'feeds' })
 export class FeedEntity {
   constructor(obj: Partial<FeedEntity>) {
     Object.assign(this, obj);
