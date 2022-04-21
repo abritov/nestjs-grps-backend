@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeedEntity } from './feed.entity';
 import { ImageEntity } from './image.entity';
 import { FeedService } from './feed.service';
+import { FeedController } from './feed.controller';
 
 @Module({
   imports: [
@@ -11,5 +12,6 @@ import { FeedService } from './feed.service';
     HttpModule.register({}),
   ],
   providers: [FeedService],
+  controllers: [FeedController],
 })
 export class FeedModule {}
