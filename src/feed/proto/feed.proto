@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package feed;
+
+service FeedService {
+  rpc GetImageStream (Pagination) returns (stream Image) {}
+}
+
+message Pagination {
+  int32 limit = 1;
+  string tags = 2;
+}
+
+message Image {
+  message Media {
+    string m = 1;
+  }
+
+  string title                         = 1;
+  string link                          = 2;
+  Media  media                         = 3;
+  google.protobuf.Timestamp date_taken = 4;
+  string description                   = 5;
+  google.protobuf.Timestamp published  = 6;
+  string author                        = 7;
+  string author_id                     = 8;
+  string tags                          = 9;
+}
